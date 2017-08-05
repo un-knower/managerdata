@@ -1,0 +1,68 @@
+
+html, body {
+    background: #ecedf0;
+    width: 100%;
+}
+.dropdown-menu{background-color:#3BBFB4;
+border:none;
+}
+#page{margin-left:240px;padding-top:77px;padding-left:15px;padding-right:15px;}
+#page-content{min-width:925px;background-color:#ffffff;min-height:400px;}
+#page-content table{width:100%;}
+#page-content table td,table th{text-align:center;height:30px;}
+table a{color:#3BBFB4;}
+.btn-zdy{
+    background-color:#3BBFB4;
+    color:#ffffff;
+    padding:6px 15px;
+}
+.btn-zdy:hover,.btn-zdy:focus{color:#ffffff;}
+.line1 {
+    display: inline-block;
+    width: 18px;
+    border-bottom: 1px solid #7d7d7d;
+    margin: 0 10px;
+    vertical-align: middle;
+}
+header{height:80px;background:#ffffff;}
+header nav{width:1200px;}
+#page-content .title{height:50px;line-height:50px;border:1px solid #dddddd;margin:0;padding-left:20px;}
+#page-content span.red{color:red;}
+#Inquire-two form {
+
+    padding: 11px 30px;
+    border-bottom: 1px solid #dddddd;
+    background-color: #efeff4;
+    color: #666666;
+}
+
+#Inquire-two form input, #Inquire-two form select {
+    height: 30px;
+    width: 135px;
+    border: 1px solid #dddddd;
+    padding-left: 10px;
+}
+
+#Inquire-two form button {
+    margin-left: 20px;
+}
+#Inquire-two form label{font-weight:normal;width:80px;text-align:right;}
+#Inquire-two form>p  label:last-of-type {
+    margin-left: 30px;
+}
+#Inquire-two .send{margin:20px 35px;}
+#Inquire-two .title-info{width:80%;margin:0 auto;margin-bottom:15px;}
+#Inquire-two .title-info td{font-weight:800;text-align:left;}
+
+
+#creatUser form p{font-size:16px;font-weight:700;margin:0;}
+#creatUser form{margin-top:20px;}
+#creatUser select{width:100%;height:33px;border:1px solid #e3e6f3;}
+
+#details tr td:nth-child(odd){font-weight:800;}
+
+.pagination li.active a, .pagination li.active span, .pagination li.active a:hover, .pagination li.active span:hover, .pagination li.active a:focus, .pagination li.active span:focus {
+    background-color:#3BBFB4;
+    border-color:#3BBFB4;
+}
+#addcontent textarea,#createrole textarea,#createchild textarea{height:100px;resize:none;overflow-y:auto;}

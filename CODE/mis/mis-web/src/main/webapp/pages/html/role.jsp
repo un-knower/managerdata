@@ -1,0 +1,521 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript" src="/mis-web/source/mvc/lib/cui.js"></script>
+<script type="text/javascript"
+	src="/mis-web/source/mvc/config/config.js"></script>
+<script type="text/javascript" src="/mis-web/source/mvc/page/page.js"></script>
+<link href="/mis-web/source/mvc/page/page.css" rel="stylesheet" />
+<script type="text/javascript" src="/mis-web/source/mvc/tree/js/jquery.ztree.core.js"></script>
+<script type="text/javascript" src="/mis-web/source/mvc/tree/js/jquery.ztree.excheck.js"></script>
+<link href="/mis-web/source/mvc/tree/css/zTreeStyle.css" rel="stylesheet" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript">
+
+	//创建角色
+	CUI.use([ 'ajaxform', 'layer', 'utils' ], function($ajax, $layer, $utils) {
+		return {
+			initialize : function() {
+				new CuiAjaxForm($('#addForm'), {
+					submitSelector : $('#addSubmit'),
+					action : '/mis-web/member/formProcessing',
+					beforeEvent : function(formData, jqForm, options) {
+						$.insertDynamicDataForTheForm(formData, jqForm,
+								options, 'jdbcTemplateName', 'mysqlTemplate');
+						$.insertDynamicDataForTheForm(formData, jqForm,
+								options, 'pFile', 'role');
+						$.insertDynamicDataForTheForm(formData, jqForm,
+								options, 'pKey', 'add');
+						return true;
+					},
+					callbackEvent : function(result) {
+						if (result.status == 'success') {
+							$("#addCancel").click();
+							pageSearch(1);
+						}
+					}
+				});
+			}
+		}
+	});
+
+	// 编辑完更新角色
+	CUI.use([ 'ajaxform', 'layer', 'utils' ], function($ajax, $layer, $utils) {
+		return {
+			initialize : function() {
+				pageSearch(1);//页面加载后执行
+				new CuiAjaxForm($('#editForm'), {
+					submitSelector : $('#editSubmit'),
+					action : '/mis-web/member/formProcessing',
+					beforeEvent : function(formData, jqForm, options) {
+						$.insertDynamicDataForTheForm(formData, jqForm,
+								options, 'jdbcTemplateName', 'mysqlTemplate');
+						$.insertDynamicDataForTheForm(formData, jqForm,
+								options, 'pFile', 'role');
+						$.insertDynamicDataForTheForm(formData, jqForm,
+								options, 'pKey', 'update');
+						return true;
+					},
+					callbackEvent : function(result) {
+						if (result.status == 'success') {
+							$("#editCancel").click();
+							pageSearch(1);
+						}
+					}
+				});
+			}
+		}
+	});
+
+	//查看角色
+	function kan(id) {
+		$(":disabled").removeAttr("disabled");//解除查看表单上元素的禁用状态，否则添充方法获取不到元素
+
+		$.ajax({
+			url : '/mis-web/member/baseQuery',
+			type : "post",
+			data : {
+				"jdbcTemplateName" : "mysqlTemplate",
+				"pFile" : "role",
+				"pKey" : "view",
+				"type" : "mysql",
+				"id" : id
+			},
+			dataType : 'json',
+			async : true,
+			success : function(result) {
+				if (result.status === 'success') {
+					//后台返回的结果集，格式[{"xx":"x"},{"xxx":"xx"},...]
+					//[{id=0ca0b02f-8879-4a8c-a150-abd8aa8c4972, rolename=&#29992;&#25143;2, create_date=06/07/2017, update_date=null, reserved1=null, reserved2=null, reserved3=null}]
+					var listInfo = result.listInfo;
+					//alert(listInfo[0].toString());
+					//下面写你的任何业务
+					$.formDataView($('#viewForm'), listInfo);
+				}
+			},
+			error : function(XMLHttpRequest, textStatus, errorThrown) {
+				alert("跳转编辑页面失败");
+			}
+		});
+	}
+
+	//跳转编辑页面，回显数据
+	function edit(id) {
+		//alert(id);
+		$.ajax({
+			url : '/mis-web/member/baseQuery',
+			type : "post",
+			data : {
+				"jdbcTemplateName" : "mysqlTemplate",
+				"pFile" : "role",
+				"pKey" : "view",
+				"type" : "mysql",
+				"id" : id
+			},
+			dataType : 'json',
+			async : true,
+			success : function(result) {
+				if (result.status === 'success') {
+					var listInfo = result.listInfo;
+					//下面写你的任何业务
+					$.formDataFill($('#editForm'), listInfo);
+				}
+			},
+			error : function(XMLHttpRequest, textStatus, errorThrown) {
+				alert("跳转编辑页面失败");
+			}
+		});
+	}
+
+	//删除角色
+	function del(id) {
+		if (confirm("你确认要删除这个角色吗？")) {
+			$.ajax({
+				url : '/mis-web/role/del',
+				type : "post",
+				data : {
+					"jdbcTemplateName" : "mysqlTemplate",
+					"pFile" : "role",
+					"pKey" : "delete",
+					"type" : "mysql",
+					"id" : id
+				},
+				dataType : 'json',
+				async : true,
+				success : function(result) {
+					if (result.status === 'success') {
+						//后台返回的结果集，格式[{"xx":"x"},{"xxx":"xx"},...]
+						var listInfo = result.listInfo;
+						//下面写你的任何业务
+						//alert(listInfo[0].username);
+						pageSearch(1);
+
+					}
+				},
+				error : function(XMLHttpRequest, textStatus, errorThrown) {
+					alert("删除失败");
+				}
+			});
+		}
+
+	}
+
+	//查询按钮绑定点击事件
+	CUI.use([ 'ajaxform', 'utils', 'layer' ], function($ajax, $utils, $layer) {
+		return {
+			initialize : function() {
+				var _this = this;
+				$('.search').click(function() {
+					pageSearch(1);
+				});
+			}
+		}
+	});
+	//列表页，查询用到的
+	function pageSearch(pageNo) {
+		$
+				.asyncRequest({
+					url : '/mis-web/member/pageSearch',
+					data : $.extend({}, {
+						"jdbcTemplateName" : "mysqlTemplate",
+						"pFile" : "role",
+						"pKey" : "select",
+						"type" : "mysql",
+						"pageNo" : pageNo,
+						"pageSize" : "10",
+						"order" : ""
+					}, $('#searchFrom').buildQueryInfo(), true),
+					event : function(result) {
+						if (result.status === 'success') {
+							var pageSource = result.listInfo;
+							//下面写你的任何业务
+							$("#mytable").html("");
+							$(pageSource.list)
+									.each(
+											function(index, element) {
+												var ind = parseInt(index) + 1;
+												var update_date = element.update_date;
+												if (update_date == null)
+													update_date = "";
+												$("#mytable")
+														.append(
+																"<tr><td>"
+																		+ ind
+																		+ "</td><td>"
+																		+ element.rolename
+																		+ "</td><td>"
+																		+ element.create_date
+																		+ "</td><td>"
+																		+ update_date
+																		+ "</td><td><a href=\"javascript:void(0)\" data-toggle=\"modal\" data-target=\"#tree\" onclick=\"getTree('"
+																		+ element.id
+																		+ "')\">配置角色</a> | <a href=\"javascript:void(0)\" data-toggle=\"modal\" data-target=\"#moodel\" onclick=\"kan('"
+																		+ element.id
+																		+ "')\">查看</a> | <a href=\"javascript:void(0)\" data-toggle=\"modal\" data-target=\"#ee\" onclick=\"edit('"
+																		+ element.id
+																		+ "')\">编辑</a> | <a href=\"javascript:void(0)\" onclick=\"del('"
+																		+ element.id
+																		+ "')\">删除</a></td></tr>");
+											});
+							$("#mytable")
+									.append(
+											"<tr><td colspan=\"5\" id=\"pager\"></td></tr>");
+							//创建分页
+							var target = $('#pager');
+							pageClick(pageSource.pageNo, pageSource.total,
+									target, 10);
+						}
+					},
+					errorFn : function() {
+						layer.alert('列表查询出错!');
+					}
+				});
+	}
+	function getTree(id){
+		$('#ts_role_id').val(id);
+		var setting = {
+				check: {
+					enable: true
+				},
+				data: {
+					simpleData: {
+						enable: true
+					}
+				}
+				//,
+				//callback: {
+					//onCheck: zTreeOnCheck
+				//}
+			};
+		$.asyncRequest({
+		 	url :'/mis-web/member/baseQuery',
+			data : {
+				"jdbcTemplateName":"mysqlTemplate",
+				"pFile":"role",
+				"pKey":"select_menu",
+				"ts_role_id":id
+			},
+			event : function(result) {
+				if (result.status === 'success') {
+					var pageSource = result.listInfo;
+					var a = JSON.stringify(pageSource);
+					a = a.replace(/pid/g,"pId");//别名不行，传过来的全是小写
+					//var zNodes = [{"id":"1","pId":"0","name":"菜单管理"},{"id":"2","pId":"1","name":"菜单管理"},{"id":"3","pId":"1","name":"角色管理"}]; 
+					var zNodes = JSON.parse(a);//zNodes不是字符串
+					$.fn.zTree.init($("#roleTree"), setting, zNodes);
+					var treeObj = $.fn.zTree.getZTreeObj("roleTree"); 
+					treeObj.expandAll(true); //展开所有
+				} 
+			},errorFn:function(){
+				layer.alert('列表查询出错!');
+			}
+		});
+	}
+	/* 复选框check事件
+	function zTreeOnCheck(event, treeId, treeNode) {
+	    alert(treeNode.tId + ", " + treeNode.name + "," + treeNode.checked);
+	};*/
+	function setTree(){
+		var id = $('#ts_role_id').val();
+		console.log(id);
+		delTree(id);
+		var treeObj = $.fn.zTree.getZTreeObj("roleTree"); 
+        nodes=treeObj.getCheckedNodes(true);
+        for(var i=0;i<nodes.length;i++){
+        	insTree(id,nodes[i].id); //添加角色的菜单权限
+        }
+        $("#treeCancel").click();// 关闭窗口
+        
+	}
+	//更新菜单权限采用先删后增
+	function delTree(id){
+		$.ajax({
+			url : '/mis-web/role/delTree',
+			type : "post",
+			data : {
+				"jdbcTemplateName" : "mysqlTemplate",
+				"pFile" : "role",
+				"pKey" : "delTree",
+				"type" : "mysql",
+				"ts_role_id" : id
+			},
+			dataType : 'json',
+			async : true,
+			success : function(result) {
+				
+			},
+			error : function(XMLHttpRequest, textStatus, errorThrown) {
+				alert("更新菜单权限前删除失败");
+			}
+		});
+	}
+	function insTree(id,menu_id){
+		$.ajax({
+			url : '/mis-web/role/insTree',
+			type : "post",
+			data : {
+				"jdbcTemplateName" : "mysqlTemplate",
+				"pFile" : "role",
+				"pKey" : "insTree",
+				"type" : "mysql",
+				"ts_role_id" : id,
+				"ts_menu_id":menu_id
+			},
+			dataType : 'json',
+			async : true,
+			success : function(result) {
+				
+			},
+			error : function(XMLHttpRequest, textStatus, errorThrown) {
+				alert("添加菜单权限失败");
+			}
+		});
+	}
+</script>
+
+
+</head>
+
+<body>
+
+	<section id="page-content">
+
+		<div id="Inquire-two">
+			<h3 class="title">角色管理</h3>
+			<form id="searchFrom">
+				<p>
+					<label for="rolename">角色名称：</label><input id="rolename"
+						name="rolename" usemap="{'logic':'and','compare':'like'}"
+						placeholder="请输入内容" />
+					<button type="button" class="btn btn-zdy search">查询</button>
+					<button type="reset" class="btn btn-zdy">重置</button>
+					<button class="btn btn-zdy" type="button" data-toggle="modal"
+						data-target="#createchild">添加</button>
+			</form>
+
+			<div>
+				<table class="table-striped table-bordered table-hover">
+					<thead>
+						<tr>
+							<th>序号</th>
+							<th>角色名称</th>
+							<th>创建时间</th>
+							<th>修改时间</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody id="mytable">
+
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+	</section>
+	<!-- 添加表单开始 -->
+	<div class="modal fade" id="createchild" tabindex="-1" role="dialog"
+		aria-labelledby="ModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="ModalLabel">添加角色</h4>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal" role="form" id="addForm"
+						method="post">
+						<div class="form-group">
+							<label for="cname" class="col-sm-3 control-label"><span
+								class="text-danger">*</span>角色名称:</label>
+							<div class="col-sm-6">
+								<input type="text" class="form-control" name="rolename"
+									usemap="{byteRangeLength:[1,30,3],required:true}">
+							</div>
+						</div>
+						<div class="modal-footer ">
+							<button type="button" class="btn btn-zdy" id="addSubmit">确定</button>
+							<button type="button" class="btn btn-zdy" data-dismiss="modal"
+								id="addCancel">取消</button>
+						</div>
+
+					</form>
+				</div>
+
+
+
+
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal -->
+	</div>
+
+	<!-- 查看表单开始 -->
+	<div class="modal fade" id="moodel" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">角色信息查看</h4>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal" id="viewForm" method="post">
+						<div class="form-group">
+
+							<label class="col-sm-5 control-label">角色名称:</label>
+							<div class="col-sm-3">
+								<input id="rolename" name="rolename" type="text"
+									class="form-control"><br>
+							</div>
+
+							<label class="col-sm-5 control-label">创建时间:</label>
+							<div class="col-sm-3">
+								<input id="create_date" name="create_date" type="text"
+									class="form-control"><br>
+							</div>
+
+							<label class="col-sm-5 control-label">修改时间:</label>
+							<div class="col-sm-3">
+								<input id="update_date" name="update_date" type="text"
+									class="form-control"><br>
+							</div>
+
+						</div>
+						<div class="modal-footer ">
+							<button type="button" class="btn btn-zdy" data-dismiss="modal">返回</button>
+
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 查看表单结束 -->
+
+	<!-- 编辑表单开始 -->
+	<div class="modal fade" id="ee" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">角色编辑</h4>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal" id="editForm" method="post">
+						<div class="form-group">
+							<label for="cname" class="col-sm-3 control-label"><span
+								class="text-danger">*</span>角色名称:</label>
+							<div class="col-sm-6">
+								<input type="hidden" name="id" /> <input type="text"
+									class="form-control" name="rolename"
+									usemap="{byteRangeLength:[1,30,3],required:true}">
+							</div>
+						</div>
+						<div class="modal-footer ">
+							<button type="button" class="btn btn-zdy" id="editSubmit">确定</button>
+							<button type="button" class="btn btn-zdy" data-dismiss="modal"
+								id="editCancel">取消</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+<!-- 配置角色开始 -->
+	<div class="modal fade" id="tree" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">配置角色</h4>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal" id="treeForm" method="post">
+						<div class="form-group">
+							<input type="hidden" id="ts_role_id"/>
+							<div class="ztree"  id="roleTree">
+
+							</div>
+						</div>
+						<div class="modal-footer ">
+							<button type="button" class="btn btn-zdy" id="treeSubmit" onclick="setTree()">确定</button>
+							<button type="button" class="btn btn-zdy" data-dismiss="modal"
+								id="treeCancel">取消</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+<!-- 配置角色结束 -->
+</body>
+
+</html>

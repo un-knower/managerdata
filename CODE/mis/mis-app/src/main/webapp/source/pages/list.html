@@ -1,0 +1,134 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>拍加乐</title>
+	<script type="text/javascript" src="../../source/mvc/lib/cui.js"></script>
+	<script type="text/javascript" src="../../source/mvc/config/config.js"></script>
+</head>
+<body>
+
+ 	<form  id ="searchFrom">
+            <div class="input-group">
+                <input type="text" class="form-control" name ="enterprise_name" usemap="{'logic':'and','compare':'like'}" placeholder="请输入要搜索的关键字">
+                 <span class="input-group-btn">
+                 <button class="btn btn-xx" type="button">搜索</button>
+                 </span>
+            </div>
+        </form>
+	
+	<script type="text/javascript">
+	CUI.use(['ajaxform','utils','layer'], function($ajax,$utils,$layer) {
+		return {
+			initialize : function() {
+				this.baseQuery();
+			 	var _this = this;
+				$('.btn-xx').click(function(){
+					_this.pageSearch();
+				}); 
+			},
+			search:function(){
+				$.asyncRequest({
+				/* 	url :'../../	member/baseQuery',
+					data : {
+						"jdbcTemplateName":"mysqlTemplate",
+						"pFile":"user",
+						"pKey":"userInfo"
+					},  */
+					/* url :'../../	member/pageSourceLoad',
+					data : {
+						"jdbcTemplateName":"mysqlTemplate,mysqlTemplate",
+						"pFile":"user,user",
+						"pKey":"userInfo,userInfo1"
+						
+					},  */
+					url :'../../member/pageSearch',
+					data : $.extend({},{
+						"jdbcTemplateName":"mysqlTemplate",
+						"pFile":"user",
+						"pKey":"userInfo",
+						"type":"mysql",
+						"pageNo":"1",
+						"pageSize":"10",
+						"order":""
+					},$('#searchFrom').buildQueryInfo(),true),
+					event : function(result) {
+						if (result.status === 'success') {
+							var pageSource = result.listInfo;
+							alert(JSON.stringify(pageSource));
+						}
+							 
+					},errorFn:function(){
+						layer.alert('列表查询出错!');
+					}
+				});
+			},
+			baseQuery:function(){
+				$.asyncRequest({
+					 	url :'../../member/baseQuery',
+						data : {
+							"jdbcTemplateName":"mysqlTemplate",
+							"pFile":"user",
+							"pKey":"userInfo",
+							"sex":"女"
+						},
+						event : function(result) {
+							if (result.status === 'success') {
+								var pageSource = result.listInfo;
+								alert(JSON.stringify(pageSource));
+							}
+						},errorFn:function(){
+							layer.alert('列表查询出错!');
+						}
+					});
+			},
+			pageSourceLoad:function(){
+				$.asyncRequest({
+						url :'../../member/pageSourceLoad',
+						data : $.extend({},{
+							"jdbcTemplateName":"mysqlTemplate,mysqlTemplate",
+							"pFile":"user,user",
+							"pKey":"userInfo,userInfo1",
+							"sex":"女",
+							"type":"汽车"
+						},$('#searchFrom').buildQueryInfo(),true),
+						event : function(result) {
+							if (result.status === 'success') {
+								var pageSource = result.listInfo;
+								alert(JSON.stringify(pageSource));
+							}
+								 
+						},errorFn:function(){
+							layer.alert('列表查询出错!');
+						}
+					});
+			},
+			pageSearch:function(){
+				$.asyncRequest({
+						url :'../../member/pageSearch',
+						data : $.extend({},{
+							"jdbcTemplateName":"mysqlTemplate",
+							"pFile":"user",
+							"pKey":"userInfo",
+							"type":"mysql",
+							"pageNo":"1",
+							"pageSize":"10",
+							"order":"",
+							"sex":"男"
+						},$('#searchFrom').buildQueryInfo(),true),
+						event : function(result) {
+							if (result.status === 'success') {
+								var pageSource = result.listInfo;
+								alert(JSON.stringify(pageSource));
+							}
+						},errorFn:function(){
+							layer.alert('列表查询出错!');
+						}
+					});
+			}
+		}
+	});
+	
+	</script>
+</body>
+</html>

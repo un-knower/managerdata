@@ -1,0 +1,46 @@
+{
+
+"total":80,
+"rows":[
+{
+"id": 1,
+"name": "213sad",
+"corporate": "张三",
+ "phone":"13202155455",
+"createTime": "2010-12-25 09:09:09",
+"state": "正常",
+ "action":""
+
+},
+ {
+  "id": 1,
+  "name": "213sad",
+  "corporate": "李四",
+  "phone":"13202155455",
+  "createTime": "2010-12-25 09:09:09",
+  "state": "冻结",
+  "action":""
+
+ },
+ {
+  "id": 1,
+  "name": "213sad",
+  "corporate": "张三",
+  "phone":"13202155455",
+  "createTime":"2010-12-25 09:09:09",
+  "state": "待审核",
+  "action":""
+
+ },
+ {
+  "id": 1,
+  "name": "213sad",
+  "corporate": "张三",
+  "phone":"13202155455",
+  "createTime": "2010-12-25 09:09:09",
+  "state": "正常",
+  "action":""
+
+ }
+
+ ]}

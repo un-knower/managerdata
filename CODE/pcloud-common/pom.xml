@@ -1,0 +1,82 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.pcloud</groupId>
+		<artifactId>pcloud-parent</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+	<artifactId>pcloud-common</artifactId>
+	<packaging>jar</packaging>
+
+
+	<!-- 集中定义依赖版本号 -->
+	<properties>
+		<commons-io.version>1.3.2</commons-io.version>
+		<commons-net.version>3.3</commons-net.version>
+		<commons-fileupload.version>1.3.1</commons-fileupload.version>
+	</properties>
+	<dependencies>
+		<!-- Apache工具组件 -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>${commons-io.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-net</groupId>
+			<artifactId>commons-net</artifactId>
+			<version>${commons-net.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+		</dependency>
+		<!-- 文件上传组件 -->
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>${commons-fileupload.version}</version>
+		</dependency>
+		<!-- Jackson Json处理工具包 -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+		<!-- httpclient -->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+		</dependency>
+		<!-- 单元测试 -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- 文件模板 相关的jar -->
+		<dependency>
+			<groupId>velocity</groupId>
+			<artifactId>velocity</artifactId>
+			<version>1.4</version>
+		</dependency>
+		<dependency>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.ethz.ganymed</groupId>
+			<artifactId>ganymed-ssh2</artifactId>
+			<version>build210</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<finalName>rpc.common</finalName>
+	</build>
+</project>
