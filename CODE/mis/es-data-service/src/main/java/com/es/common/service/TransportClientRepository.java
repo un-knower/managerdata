@@ -188,11 +188,11 @@ public class TransportClientRepository {
 		
 		int nowPageNum = 1;
 		
-		for (SearchHit hit : scrollResp.getHits()) {
-			String sourceAsString = hit.getSourceAsString();
-			System.out.println(sourceAsString);
-			
-		}
+//		for (SearchHit hit : scrollResp.getHits()) {
+//			String sourceAsString = hit.getSourceAsString();
+//			System.out.println(sourceAsString);
+//			
+//		}
 			
 //		if(scrollResp.getHits().getHits().length != 0) {
 		do {

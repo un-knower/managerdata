@@ -1,6 +1,8 @@
 package com.zkdj.gxkjt.es.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.es.common.service.Article;
+import com.es.common.service.TargetContent;
 import com.ufc.user.utils.Pager;
 import com.ufc.user.utils.PostJsonUtils;
 import com.zkdj.gxkjt.es.service.AppService;
@@ -108,6 +111,34 @@ public class EsCommonController{
 				article.setAuthor(author);
 				
 				String jsonStr = esCommonService.updateById(index,type,id,article);
+				return jsonStr;
+			}
+		}
+		return null;
+	}
+	
+	public static SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+	@RequestMapping(value = "/updateContentById",produces = "application/json; charset=utf-8")
+	@ResponseBody
+	public String updateContentById(HttpServletRequest request, HttpServletResponse response){
+		String paramJson = PostJsonUtils.getPostJson(request);
+		if(StringUtils.isNotEmpty(paramJson)){
+			JSONObject params = JSONObject.parseObject(paramJson);
+			String index = params.getString("index");
+			String type = params.getString("type");
+			String id= params.getString("id");
+			if(StringUtils.isNotEmpty(id)){
+				TargetContent targetContent = new TargetContent();
+				
+				String content = params.getString("content");
+				String targetid = params.getString("targetid");
+				targetContent.setTargetid(targetid);
+				targetContent.setContent(content);
+				
+				String updatetime = sdf.format(new Date());
+				targetContent.setUpdatetime(updatetime);
+				
+				String jsonStr = esCommonService.updateById(index,type,id,targetContent);
 				return jsonStr;
 			}
 		}

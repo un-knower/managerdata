@@ -27,10 +27,13 @@ public class ArticleRepositoryTest{
 		
 		// 批量插入测试数据
 //		insertContent(index, type);
+//		insertTargetContent();
 		
 		
 		// 查询title包含标题的内容
-		Pager<JSONObject> pager = client.searchFullText("title", "", 3, 10, type, index);
+//		Pager<JSONObject> pager = client.searchFullText("title", "", 3, 10, type, index);
+//		System.out.println(JSONObject.toJSONString(pager));
+		Pager<JSONObject> pager = client.searchFullText("", "", 1, 10, "content", "managerdataindex");
 		System.out.println(JSONObject.toJSONString(pager));
 		
 		
@@ -118,6 +121,26 @@ public class ArticleRepositoryTest{
 			article.setAuthor("刘德华" + i);
 			article.setRemrak("备注" + i);
 			result = client.saveDoc(index, type, article.getId(), article);
+			System.out.println("SAVE" + i + " : " + result);
+		}
+	}
+	
+	// 语料批量插入
+	public static void insertTargetContent() {
+		String index = "managerdataindex"; 
+		String type = "content";
+		String result = null;
+		int maxNum = 20;
+		TargetContent targetContent = null;
+		for (int i = 0; i < maxNum; i++) {
+			targetContent = new TargetContent();
+			targetContent.setId(getUUID());
+			targetContent.setContent("test内容" + i + "：test内容");
+			targetContent.setTargetid("516f7b13-68f4-4e8f-8451-686f6ffe56c8");
+			targetContent.setUpdatetime("2017-08-06 11:" + i + ":11");
+			targetContent.setSource("https://www.baidu.com/yangchao/" + i + "/test");
+			targetContent.setRemrak("备注" + i);
+			result = client.saveDoc(index, type, targetContent.getId(), targetContent);
 			System.out.println("SAVE" + i + " : " + result);
 		}
 	}

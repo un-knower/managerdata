@@ -31,13 +31,13 @@
 		</form>
 		<div>
 			<!-- 添加人工研制按钮 -->
-			<p class="send">
+			<!-- <p class="send">
 				<button class="btn btn-zdy" data-toggle="modal"
 					data-target="#addcontent" onclick="addType();">添加人工研制</button>
 				<button class="btn btn-zdy" data-toggle="modal"
 					data-target="#addcontent_2" onclick="addcontent_2();">导入人工研制</button>
 				<button class="btn btn-zdy" onclick="downloadfile();">导入模板下载</button>
-			</p>
+			</p> -->
 
 			<!-- 人工研制列表 -->
 			<table class="table-striped table-bordered table-hover">
@@ -233,6 +233,10 @@ return {
 					$("#edit_deploytime").val(listInfo[0].deployTime);
 					$("#edit_content").val(listInfo[0].content);
 					$("#edit_id").val(listInfo[0].id);
+				}
+				if (result.status === 'error') {
+					alert("该数据异常无法修改！");
+					$("#edit_cancel").click();// 关闭按钮
 				}
 			},
 			error : function(XMLHttpRequest, textStatus, errorThrown) {
