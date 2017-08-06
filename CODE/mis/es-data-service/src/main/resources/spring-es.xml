@@ -6,9 +6,17 @@
 	default-lazy-init="true">
 
 	<!-- 自定义的elasticsearch客户端 -->
-    <bean id="esTransportClient" class="com.ufc.user.utils.ESTransportClient">
-        <property name="clusterNodes" value="111.67.205.24:9300" />
+    <!-- <bean id="esTransportClient" class="com.ufc.user.utils.ESTransportClient">
+        <property name="clusterNodes" value="127.0.0.1:9300" />
         <property name="clusterName" value="elasticsearch" />
+    </bean> -->
+    
+    <bean id="transportClient" class="com.es.common.service.TransportClientFactoryBean">
+        <property name="clusterNodes" value="127.0.0.1:9300" />
+        <property name="clusterName" value="elasticsearch" />
+    </bean>
+    <bean id="transportClientRepository" class="com.es.common.service.TransportClientRepository">
+        <constructor-arg ref="transportClient"/>
     </bean>
  
 </beans>

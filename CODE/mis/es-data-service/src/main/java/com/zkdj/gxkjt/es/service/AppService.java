@@ -24,10 +24,10 @@ import com.ufc.user.utils.ParseRuleUtils;
 * @version 创建时间：2017年7月28日
 * 类说明:
 */
-@Service
+//@Service
 public class AppService {
 	private static Logger logger = LoggerFactory.getLogger(AppService.class);
-	@Autowired
+	//@Autowired
 	private ESTransportClient eSTransportClient;
     /**
      * 全文查询
@@ -77,8 +77,8 @@ public class AppService {
 				}
 			}
 			//行业
-			String industry=params.getString("industry");
-			if(StringUtils.isNotEmpty(industry)){
+			if(StringUtils.isNotEmpty(params.getString("industry"))){
+				String industry=params.getString("industry");
 				if (com.ufc.user.utils.JSONUtils.checkJsonArray(industry)) {
 					JSONArray array = JSONArray.parseArray(industry);
 					buffer.append(" ( ");
@@ -98,8 +98,8 @@ public class AppService {
 				}
 			}
 			//九张名片
-			String card=params.getString("card");
-			if(StringUtils.isNotEmpty(card)){
+			if(StringUtils.isNotEmpty(params.getString("card"))){
+				String card=params.getString("card");
 				if (com.ufc.user.utils.JSONUtils.checkJsonArray(card)) {
 					JSONArray array = JSONArray.parseArray(card);
 					buffer.append(" ( ");
@@ -119,8 +119,8 @@ public class AppService {
 				}
 			}
 			//站点
-			String siteName=params.getString("siteName");
-			if(StringUtils.isNotEmpty(siteName)){
+			if(StringUtils.isNotEmpty(params.getString("siteName"))){
+				String siteName=params.getString("siteName");
 				if (com.ufc.user.utils.JSONUtils.checkJsonArray(siteName)) {
 					JSONArray array = JSONArray.parseArray(siteName);
 					buffer.append(" ( ");
@@ -140,8 +140,8 @@ public class AppService {
 				}
 			}
 			//栏目
-			String columnName=params.getString("columnName");
-			if(StringUtils.isNotEmpty(columnName)){
+			if(StringUtils.isNotEmpty(params.getString("columnName"))){
+				String columnName=params.getString("columnName");
 				if (com.ufc.user.utils.JSONUtils.checkJsonArray(columnName)) {
 					JSONArray array = JSONArray.parseArray(columnName);
 					buffer.append(" ( ");

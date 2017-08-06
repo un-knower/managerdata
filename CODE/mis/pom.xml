@@ -15,7 +15,7 @@
 		<module>mis-security</module>
 		<module>mis-app</module>
 		<module>es-data-service</module>
-    <module>es-data-api</module>
+    	<module>es-data-api</module>
 	</modules>
 	<dependencies>
 		<!--rpc module -->

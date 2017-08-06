@@ -7,6 +7,7 @@ import java.util.Properties;
 
 import static org.apache.commons.lang.StringUtils.*;
 
+import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
@@ -26,7 +27,7 @@ import org.springframework.beans.factory.InitializingBean;
 public class ESTransportClient implements FactoryBean<TransportClient>, InitializingBean, DisposableBean {
 
     private static final Logger logger = LoggerFactory.getLogger(ESTransportClient.class);
-    private String clusterNodes = "172.168.30.117:9300";
+    private String clusterNodes = "127.0.0.1:9300";
     private String clusterName = "elasticsearch";
     private Boolean clientTransportSniff = true;
     private Boolean clientIgnoreClusterName = Boolean.FALSE;
@@ -172,5 +173,5 @@ public class ESTransportClient implements FactoryBean<TransportClient>, Initiali
 				.explain(query).explain();
 		return ((SearchResponse) select.get());
 	}
-
+	
 }

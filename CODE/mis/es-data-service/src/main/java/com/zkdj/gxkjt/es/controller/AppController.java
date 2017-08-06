@@ -23,10 +23,10 @@ import com.zkdj.gxkjt.es.service.AppService;
 * @version 创建时间：2017年7月26日
 * 类说明:
 */
-@Controller
-@RequestMapping("/app")
+//@Controller
+//@RequestMapping("/app")
 public class AppController{
-	@Autowired
+	//@Autowired
 	private AppService appService;
 	
 	/**
@@ -51,16 +51,17 @@ public class AppController{
 	@RequestMapping(value = "/queryById",produces = "application/json; charset=utf-8")
 	@ResponseBody
 	public String queryById(HttpServletRequest request, HttpServletResponse response){
-		String paramJson = PostJsonUtils.getPostJson(request);
-		if(StringUtils.isNotEmpty(paramJson)){
-			JSONObject params = JSONObject.parseObject(paramJson);
-			String id= params.getString("id");
-			if(StringUtils.isNotEmpty(id)){
+//		String paramJson = PostJsonUtils.getPostJson(request);
+//		if(StringUtils.isNotEmpty(paramJson)){
+//			JSONObject params = JSONObject.parseObject(paramJson);
+//			String id= params.getString("id");
+//			if(StringUtils.isNotEmpty(id)){
+		String id = "123";
 				JSONObject json=appService.queryById(id);
 				return json.toJSONString();
-			}
-		}
-		return null;
+//			}
+//		}
+//		return null;
 	}
 	@RequestMapping(value = "/queryByIds", produces = "application/json; charset=utf-8")
 	@ResponseBody
