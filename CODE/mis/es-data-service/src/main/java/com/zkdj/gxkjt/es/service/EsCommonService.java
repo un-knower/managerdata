@@ -31,5 +31,10 @@ public class EsCommonService {
 	public String updateById(String index, String type, String id, Object doc) {
 		return eSTransportClient.updateDoc(index, type, id, doc);
 	}
+	
+	// 模糊查询-无分页
+	public Pager<JSONObject> searchAllSimilarity(String filed, Object queryValue, int pageNum, int pageSize, String type, String... indexs) {
+		return eSTransportClient.searchAllSimilarity(filed, queryValue, pageNum, pageSize, type, indexs);
+	}
     
 }

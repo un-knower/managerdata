@@ -1,5 +1,6 @@
 package com.es.common.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,12 +29,21 @@ public class ArticleRepositoryTest{
 		// 批量插入测试数据
 //		insertContent(index, type);
 //		insertTargetContent();
+//		insertTargetContent2();
 		
 		
 		// 查询title包含标题的内容
 //		Pager<JSONObject> pager = client.searchFullText("title", "", 3, 10, type, index);
 //		System.out.println(JSONObject.toJSONString(pager));
-		Pager<JSONObject> pager = client.searchFullText("", "", 1, 10, "content", "managerdataindex");
+//		Pager<JSONObject> pager = client.searchFullText("content", "外经贸控股公司", 1, 10, "content", "managerdataindex");
+//		System.out.println(JSONObject.toJSONString(pager));
+		
+		
+		List list = new ArrayList();
+		list.add("万岁");
+		list.add("无敌");
+		list.add("苏沐橙");
+		Pager<JSONObject> pager = client.searchAllSimilarity("key", list, 1,100, "content_text","managerdataindex");
 		System.out.println(JSONObject.toJSONString(pager));
 		
 		
@@ -143,6 +153,137 @@ public class ArticleRepositoryTest{
 			result = client.saveDoc(index, type, targetContent.getId(), targetContent);
 			System.out.println("SAVE" + i + " : " + result);
 		}
+	}
+	
+	// 语料批量插入
+	public static void insertTargetContent2() {
+		String index = "managerdataindex";
+		String type = "content_text";
+		String result = null;
+		TargetContent2 targetContent = null;
+		List<String> list = null;
+		
+		targetContent = new TargetContent2();
+		targetContent.setId(getUUID());
+		targetContent.setContent("1");
+		list = new ArrayList<String>();
+		list.add("中国");
+		list.add("万岁");
+		list.add("杨超");
+		list.add("叶修");
+		list.add("苏沐橙");
+		targetContent.setKey(list);
+		
+		result = client.saveDoc(index, type, targetContent.getId(), targetContent);
+		System.out.println("SAVE" + 1 + " : " + result);
+		
+		
+		targetContent = new TargetContent2();
+		targetContent.setId(getUUID());
+		targetContent.setContent("2");
+		list = new ArrayList<String>();
+		list.add("万岁");
+		list.add("无敌");
+		list.add("杨超");
+		targetContent.setKey(list);
+		
+		result = client.saveDoc(index, type, targetContent.getId(), targetContent);
+		System.out.println("SAVE" + 2 + " : " + result);
+		
+		
+		targetContent = new TargetContent2();
+		targetContent.setId(getUUID());
+		targetContent.setContent("3");
+		list = new ArrayList<String>();
+		list.add("无敌");
+		list.add("美国");
+		list.add("叶修");
+		targetContent.setKey(list);
+		
+		result = client.saveDoc(index, type, targetContent.getId(), targetContent);
+		System.out.println("SAVE" + 3 + " : " + result);
+		
+		
+		targetContent = new TargetContent2();
+		targetContent.setId(getUUID());
+		targetContent.setContent("4");
+		list = new ArrayList<String>();
+		list.add("中国");
+		list.add("万岁");
+		list.add("无敌");
+		list.add("苏沐橙");
+		targetContent.setKey(list);
+		
+		result = client.saveDoc(index, type, targetContent.getId(), targetContent);
+		System.out.println("SAVE" + 4 + " : " + result);
+	}
+	
+	
+	
+	
+	
+	// 语料批量插入
+	public static void insertTargetContentKey() {
+		String index = "managerdataindex";
+		String type = "content_text";
+		String result = null;
+		TargetContent2 targetContent = null;
+		List<String> list = null;
+
+		targetContent = new TargetContent2();
+		targetContent.setId(getUUID());
+		targetContent.setContent("1");
+		list = new ArrayList<String>();
+		list.add("中国");
+		list.add("万岁");
+		list.add("杨超");
+		list.add("叶修");
+		list.add("苏沐橙");
+		targetContent.setKey(list);
+
+		result = client.saveDoc(index, type, targetContent.getId(),
+				targetContent);
+		System.out.println("SAVE" + 1 + " : " + result);
+
+		targetContent = new TargetContent2();
+		targetContent.setId(getUUID());
+		targetContent.setContent("2");
+		list = new ArrayList<String>();
+		list.add("万岁");
+		list.add("无敌");
+		list.add("杨超");
+		targetContent.setKey(list);
+
+		result = client.saveDoc(index, type, targetContent.getId(),
+				targetContent);
+		System.out.println("SAVE" + 2 + " : " + result);
+
+		targetContent = new TargetContent2();
+		targetContent.setId(getUUID());
+		targetContent.setContent("3");
+		list = new ArrayList<String>();
+		list.add("无敌");
+		list.add("美国");
+		list.add("叶修");
+		targetContent.setKey(list);
+
+		result = client.saveDoc(index, type, targetContent.getId(),
+				targetContent);
+		System.out.println("SAVE" + 3 + " : " + result);
+
+		targetContent = new TargetContent2();
+		targetContent.setId(getUUID());
+		targetContent.setContent("4");
+		list = new ArrayList<String>();
+		list.add("中国");
+		list.add("万岁");
+		list.add("无敌");
+		list.add("苏沐橙");
+		targetContent.setKey(list);
+
+		result = client.saveDoc(index, type, targetContent.getId(),
+				targetContent);
+		System.out.println("SAVE" + 4 + " : " + result);
 	}
 	
 	public static String getUUID() {

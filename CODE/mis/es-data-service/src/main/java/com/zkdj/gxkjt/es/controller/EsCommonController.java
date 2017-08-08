@@ -145,6 +145,34 @@ public class EsCommonController{
 		return null;
 	}
 	
+	/**
+	 * 全文查询-不分页
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/searchallsimilarity",produces = "application/json; charset=utf-8")
+	@ResponseBody
+	public String searchAllSimilarity(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			String paramJson = PostJsonUtils.getPostJson(request);
+			JSONObject params = JSONObject.parseObject(paramJson);
+
+			String index = params.getString("index");
+			String type = params.getString("type");
+			
+			String filed = params.getString("filed");
+			Object queryValue =params.getJSONArray("queryValue");
+			
+			int pageNo = Integer.valueOf(params.getString("pageNo"));// 页码
+			int pageSize = Integer.valueOf(params.getString("pageSize"));// 单页数量
+			Pager<JSONObject> pager = esCommonService.searchAllSimilarity(filed, queryValue, pageNo, pageSize, type, index);
+			return JSONObject.toJSONString(pager);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "success";
+	}
 	
 	/*
 	@RequestMapping(value = "/queryByIds", produces = "application/json; charset=utf-8")

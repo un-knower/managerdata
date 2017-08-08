@@ -2,6 +2,7 @@ package com.es.common.service;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
+import java.sql.SQLFeatureNotSupportedException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.text.Text;
@@ -22,16 +24,23 @@ import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
+import org.nlpcn.es4sql.exception.SqlParseException;
+import org.nlpcn.es4sql.query.ESActionFactory;
+import org.nlpcn.es4sql.query.SqlElasticSearchRequestBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.ufc.user.utils.FullSearchUtils;
 import com.ufc.user.utils.Pager;
+import com.ufc.user.utils.ParseRuleUtils;
 
 public class TransportClientRepository {
 	private static final Logger log = LoggerFactory
@@ -44,6 +53,19 @@ public class TransportClientRepository {
 		this.client = client;
 	}
 
+	public SearchHits searchQuery(String query) throws SqlParseException,
+			SQLFeatureNotSupportedException, SQLFeatureNotSupportedException {
+		SqlElasticSearchRequestBuilder select = getSearchRequestBuilder(query);
+		System.out.println(select);
+		return ((SearchResponse) select.get()).getHits();
+	}
+	public SqlElasticSearchRequestBuilder getSearchRequestBuilder(String query)
+			throws SqlParseException, SQLFeatureNotSupportedException {
+		return (SqlElasticSearchRequestBuilder) ESActionFactory.create(client, query).explain();
+	}
+	
+	
+	
 	/**
 	 * 创建搜索引擎文档
 	 * 
@@ -156,7 +178,6 @@ public class TransportClientRepository {
 		
 		SearchResponse scrollResp = null;
 		
-		
 //		if(queryParamList.isEmpty()) {
 		if(StringUtils.isBlank(filed) || StringUtils.isBlank(queryValue)) {
 			scrollResp = client.prepareSearch(indexs)// 需要搜索的索引库
@@ -177,8 +198,10 @@ public class TransportClientRepository {
 			
 			QueryBuilder builder = QueryBuilders.matchQuery(filed, queryValue);
 			scrollResp = client.prepareSearch(indexs)
+					.setTypes(type) // 搜索的类型(相当于数据库中的表),这里如果不设置就搜索这个索引库下所有的类型，
 					.addSort(FieldSortBuilder.DOC_FIELD_NAME, SortOrder.ASC)
-					.setFrom((pageNum-1) * pageSize).setSize(pageSize)
+					.setFrom((pageNum-1) * pageSize)
+					.setSize(pageSize)
 					.setScroll(new TimeValue(60000))
 					.setQuery(builder)// 搜索的条件
 					//.get();
@@ -219,6 +242,38 @@ public class TransportClientRepository {
 			}
 		} while (scrollResp.getHits().getHits().length != 0 && nowPageNum <= pageNum);
 //		}
+		return pageIndex;
+	}
+	
+	
+	
+	
+	public Pager<JSONObject> searchAllSimilarity(String filed,
+			Object queryValue, int pageNum, int pageSize, String type,
+			String... indexs) {
+		Pager<JSONObject> pageIndex = new Pager<JSONObject>();
+		SearchResponse scrollResp = null;
+
+		QueryBuilder builder = QueryBuilders.matchQuery(filed, queryValue);
+		scrollResp = client.prepareSearch(indexs).setTypes(type)// 搜索的类型(相当于数据库中的表),这里如果不设置就搜索这个索引库下所有的类型，
+				.setSearchType(SearchType.DEFAULT)
+				// .addSort(FieldSortBuilder.DOC_FIELD_NAME, SortOrder.ASC)
+				.setFrom((pageNum-1) * pageSize)// 从多少开始搜，相当于pageIndex
+				.setSize(pageSize)
+				.setScroll(new TimeValue(60000)).setQuery(builder)// 搜索的条件
+				// .get();
+				.execute().actionGet();
+
+		List<JSONObject> list = new ArrayList<>();
+		for (SearchHit hit : scrollResp.getHits().getHits()) {
+			String object = hit.getSourceAsString();
+			list.add(JSONObject.parseObject(object));
+		}
+		long count = scrollResp.getHits().totalHits;
+		pageIndex.setList(list);
+		pageIndex.setCount(Integer.valueOf(count + ""));// 所有数据总数
+		pageIndex.setPageNo(pageNum);
+		pageIndex.setPageSize(pageSize); 
 		return pageIndex;
 	}
 
